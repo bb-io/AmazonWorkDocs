@@ -10,14 +10,12 @@ namespace Apps.AmazonWorkDocs.Invocables;
 public class AmazonWorkDocsInvocable : BaseInvocable
 {
     protected AmazonWorkDocsApiClient Client { get; }
-    protected string OrganizationId { get; }
 
     protected AuthenticationCredentialsProvider[] Creds =>
         InvocationContext.AuthenticationCredentialsProviders.ToArray();
 
     public AmazonWorkDocsInvocable(InvocationContext invocationContext) : base(invocationContext)
     {
-        OrganizationId = Creds.Get(CredsNames.OrganizationId).Value;
         Client = new(Creds);
     }
 }

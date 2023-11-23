@@ -4,8 +4,8 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Product>App</Product>
-        <Description>Description</Description>
+        <Product>AmazonWorkDocs</Product>
+        <Description>Amazon service to store, manage, share, and collaborate on documents, spreadsheets, and other files with your coworkers</Description>
         <Version>1.0.0</Version>
         <PackageId>Apps.AmazonWorkDocs</PackageId>
     </PropertyGroup>

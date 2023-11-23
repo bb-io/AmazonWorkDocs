@@ -1,4 +1,6 @@
-﻿using Apps.AmazonWorkDocs.Api;
+﻿using Amazon.Runtime.Internal;
+using Amazon.WorkDocs.Model;
+using Apps.AmazonWorkDocs.Api;
 using Apps.AmazonWorkDocs.Constants;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
@@ -16,23 +18,23 @@ public class ConnectionValidator : IConnectionValidator
         using var client = new AmazonWorkDocsApiClient(creds);
         try
         {
-            var w = await client.DescribeUsersAsync(new()
+            await client.GetDocumentAsync(new()
             {
-                OrganizationId = creds.Get(CredsNames.OrganizationId).Value
+                DocumentId = "documentId",
             }, cancellationToken);
-
-            return new()
-            {
-                IsValid = true
-            };
         }
         catch (Exception ex)
         {
-            return new()
-            {
-                IsValid = false,
-                Message = ex.Message
-            };
+            if(ex is UnauthorizedResourceAccessException)
+                return new()
+                {
+                    IsValid = true,
+                };
         }
+
+        return new()
+        {
+            IsValid = false
+        };
     }
 }

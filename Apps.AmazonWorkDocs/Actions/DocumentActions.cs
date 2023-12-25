@@ -7,15 +7,19 @@ using Apps.AmazonWorkDocs.Models.Response;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 
 namespace Apps.AmazonWorkDocs.Actions;
 
 [ActionList]
 public class DocumentActions : AmazonWorkDocsInvocable
 {
-    public DocumentActions(InvocationContext invocationContext) : base(invocationContext)
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public DocumentActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(
+        invocationContext)
     {
+        _fileManagementClient = fileManagementClient;
     }
 
     [Action("Get document", Description = "Get details of a specific document")]
@@ -43,13 +47,12 @@ public class DocumentActions : AmazonWorkDocsInvocable
             VersionId = doc.VersionId
         });
 
+        var file = await _fileManagementClient.UploadAsync(response.Stream, response.DocumentId,
+            MediaTypeNames.Application.Octet);
+        
         return new()
         {
-            File = new(await response.Stream.GetByteData())
-            {
-                Name = response.DocumentId,
-                ContentType = MediaTypeNames.Application.Octet
-            }
+            File = file
         };
     }
 
@@ -60,9 +63,11 @@ public class DocumentActions : AmazonWorkDocsInvocable
         {
             WorkDocsClient = Client
         });
+
+        var fileStream = await _fileManagementClient.DownloadAsync(input.File);
         var response = await contentManager.UploadDocumentStreamAsync(new()
         {
-            Stream = new MemoryStream(input.File.Bytes),
+            Stream = fileStream,
             ParentFolderId = input.ParentFolderId,
             DocumentName = input.DocumentName,
             ContentType = input.File.ContentType

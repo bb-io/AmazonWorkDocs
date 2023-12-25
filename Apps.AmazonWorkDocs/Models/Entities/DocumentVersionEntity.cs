@@ -1,4 +1,3 @@
-using Amazon.WorkDocs;
 using Amazon.WorkDocs.Model;
 using Blackbird.Applications.Sdk.Common;
 

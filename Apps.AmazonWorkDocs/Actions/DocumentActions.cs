@@ -47,9 +47,9 @@ public class DocumentActions : AmazonWorkDocsInvocable
             VersionId = doc.VersionId
         });
 
-        var file = await _fileManagementClient.UploadAsync(response.Stream, response.DocumentId,
-            MediaTypeNames.Application.Octet);
-        
+        var file = await _fileManagementClient.UploadAsync(response.Stream, MediaTypeNames.Application.Octet,
+            response.DocumentId);
+
         return new()
         {
             File = file

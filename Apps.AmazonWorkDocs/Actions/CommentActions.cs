@@ -4,6 +4,7 @@ using Apps.AmazonWorkDocs.Models.Entities;
 using Apps.AmazonWorkDocs.Models.Request.Comment;
 using Apps.AmazonWorkDocs.Models.Request.Document;
 using Apps.AmazonWorkDocs.Models.Response.Comment;
+using Apps.AmazonWorkDocs.Utils;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -36,14 +37,14 @@ public class CommentActions : AmazonWorkDocsInvocable
     [Action("Add comment", Description = "Add a new comment to the document")]
     public async Task<CommentEntity> AddComment([ActionParameter] AddCommentRequest request)
     {
-        var response = await Client.CreateCommentAsync(new()
+        var response = await AmazonHandler.Execute(() => Client.CreateCommentAsync(new()
         {
             DocumentId = request.DocumentId,
             VersionId = request.VersionId,
             Text = request.Comment,
             NotifyCollaborators = request.NotifyCollaborators ?? default,
             Visibility = request.IsCommentPrivate is true ? CommentVisibilityType.PRIVATE : CommentVisibilityType.PUBLIC
-        });
+        }));
 
         return new(response.Comment);
     }
@@ -51,11 +52,11 @@ public class CommentActions : AmazonWorkDocsInvocable
     [Action("Delete comment", Description = "Delete specific comment")]
     public Task DeleteComment([ActionParameter] CommentRequest request)
     {
-        return Client.DeleteCommentAsync(new()
+        return AmazonHandler.Execute(() => Client.DeleteCommentAsync(new()
         {
             DocumentId = request.DocumentId,
             VersionId = request.VersionId,
             CommentId = request.CommentId
-        });
+        }));
     }
 }

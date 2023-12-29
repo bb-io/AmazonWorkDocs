@@ -1,10 +1,7 @@
-﻿using Amazon.Runtime.Internal;
-using Amazon.WorkDocs.Model;
+﻿using Amazon.WorkDocs.Model;
 using Apps.AmazonWorkDocs.Api;
-using Apps.AmazonWorkDocs.Constants;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
-using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
 
 namespace Apps.AmazonWorkDocs.Connections;
 

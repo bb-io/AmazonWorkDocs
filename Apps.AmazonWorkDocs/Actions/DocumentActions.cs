@@ -4,6 +4,7 @@ using Apps.AmazonWorkDocs.Invocables;
 using Apps.AmazonWorkDocs.Models.Entities;
 using Apps.AmazonWorkDocs.Models.Request.Document;
 using Apps.AmazonWorkDocs.Models.Response;
+using Apps.AmazonWorkDocs.Utils;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -25,10 +26,10 @@ public class DocumentActions : AmazonWorkDocsInvocable
     [Action("Get document", Description = "Get details of a specific document")]
     public async Task<DocumentEntity> GetDocument([ActionParameter] DocumentRequest doc)
     {
-        var response = await Client.GetDocumentAsync(new()
+        var response = await AmazonHandler.Execute(() => Client.GetDocumentAsync(new()
         {
             DocumentId = doc.DocumentId
-        });
+        }));
 
         return new(response.Metadata);
     }
@@ -41,11 +42,11 @@ public class DocumentActions : AmazonWorkDocsInvocable
             WorkDocsClient = Client
         });
 
-        var response = await contentManager.GetDocumentStreamAsync(new()
+        var response = await AmazonHandler.Execute(() => contentManager.GetDocumentStreamAsync(new()
         {
             DocumentId = doc.DocumentId,
             VersionId = doc.VersionId
-        });
+        }));
 
         var file = await _fileManagementClient.UploadAsync(response.Stream, MediaTypeNames.Application.Octet,
             response.DocumentId);
@@ -65,13 +66,18 @@ public class DocumentActions : AmazonWorkDocsInvocable
         });
 
         var fileStream = await _fileManagementClient.DownloadAsync(input.File);
-        var response = await contentManager.UploadDocumentStreamAsync(new()
+
+        await using var memoryStream = new MemoryStream();
+        await fileStream.CopyToAsync(memoryStream);
+        
+        var response = await AmazonHandler.Execute(() => contentManager.UploadDocumentStreamAsync(new()
         {
-            Stream = fileStream,
+            Stream = memoryStream,
             ParentFolderId = input.ParentFolderId,
             DocumentName = input.DocumentName,
-            ContentType = input.File.ContentType
-        });
+            DocumentSizeInBytes = input.File.Size,
+            ContentType = input.ContentType ?? input.File.ContentType
+        }));
 
         return await GetDocument(new()
         {

@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <Product>Amazon WorkDocs</Product>
         <Description>Amazon service to store, manage, share, and collaborate on documents, spreadsheets, and other files with your coworkers</Description>
-        <Version>1.0.3</Version>
+        <Version>1.1.0</Version>
         <AssemblyName>Apps.AmazonWorkDocs</AssemblyName>
     </PropertyGroup>
 

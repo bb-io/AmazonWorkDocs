@@ -12,4 +12,7 @@ public class CreateDocumentRequest
     
     [Display("Document name")]
     public string DocumentName { get; set; }
+    
+    [Display("Content type")]
+    public string? ContentType { get; set; }
 }

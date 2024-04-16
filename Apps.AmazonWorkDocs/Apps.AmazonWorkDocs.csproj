@@ -6,12 +6,12 @@
         <Nullable>enable</Nullable>
         <Product>Amazon WorkDocs</Product>
         <Description>Amazon service to store, manage, share, and collaborate on documents, spreadsheets, and other files with your coworkers</Description>
-        <Version>1.1.0</Version>
+        <Version>1.1.1</Version>
         <AssemblyName>Apps.AmazonWorkDocs</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.2-alpha1" />
+        <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0" />
         <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
         <PackageReference Include="AWSSDK.WorkDocs" Version="3.7.300.6" />
         <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.12"/>
